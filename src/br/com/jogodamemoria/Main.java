@@ -1,21 +1,21 @@
 package br.com.jogodamemoria;
 
-import javax.swing.JOptionPane;
-import java.awt.EventQueue;
+import javax.swing.*;
+import java.awt.*;
 
 
 public class Main {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		try {
-			EventQueue.invokeLater(JanelaDoJogo::new);
+    // Execução do programa
+    public static void main(String[] args) {
+        // TODO Auto-generated method stub
+        try {
+            EventQueue.invokeLater(JanelaDoJogo::new);
 
-
-		}catch(Exception e) {
-			JOptionPane.showMessageDialog(null, "Ocorreu um erro ao iniciar o programa!\nDetalhes: " + e,"Erro",JOptionPane.ERROR_MESSAGE);
-			System.exit(-1);
-		}
-	}
+        } catch (RuntimeException e) {
+            JOptionPane.showMessageDialog(null, "Ocorreu um erro ao iniciar o programa!\nDetalhes: " + e, "Erro", JOptionPane.ERROR_MESSAGE);
+            System.exit(-1);
+        }
+    }
 
 }
