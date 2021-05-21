@@ -1,16 +1,16 @@
 package br.com.jogodamemoria;
 
+
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.util.Objects;
+import javax.swing.Timer;
 import java.util.Random;
-
 
 public class Carta extends JPanel {
 
-    static Timer temporizador;
+    private static Timer temporizador;
 
     private ImageIcon iconeInterrogacao;
     private JButton[] botoes;
@@ -34,17 +34,22 @@ public class Carta extends JPanel {
             // Excessão que tenta lidar com a entrada invalida do usuario.
             try {
                 mudarDificuldade();
-                JOptionPane.showMessageDialog(null, "Você possui " + this.dificuldade + " tentativas!\nBoa sorte!", "Escolha a dificuldade", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Você possui " + this.dificuldade +
+                        " tentativas!\nBoa sorte!", "Escolha de dificuldade", JOptionPane.INFORMATION_MESSAGE);
             } catch (NumberFormatException e) {
-                JOptionPane.showMessageDialog(null, "Erro: o campo não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(null, "Erro: o campo não pode estar vazio!",
+                        "Erro", JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }
 
             // Carrega o icone de interrogação das cartas.
-            this.setIconeInterrogacao(new ImageIcon(Objects.requireNonNull(getClass().getResource("res/interrogacao.png"))));
+            this.setIconeInterrogacao(new ImageIcon(Objects.requireNonNull(getClass().
+                    getResource("res/interrogacao.png"))));
 
             // A String filenames contém o caminho de todas as imagens usadas no jogo.
-            String[] filenames = {"res/metais.png", "res/organicos.png", "res/papel.png", "res/plastico.png", "res/vidros.png"};
+            String[] filenames = {"res/metais.png", "res/organicos.png", "res/papel.png", "res/plastico.png",
+                    "res/vidros.png"};
+
             int totalBtns = filenames.length * 2;
 
             this.setTotalBotoes(totalBtns);
@@ -93,29 +98,34 @@ public class Carta extends JPanel {
         }
     }
 
-    /*
-     *  GETTERS e SETTERS
-     *
-     */
+    class TimerListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            // O temporizador depois de ativado, define o icone das cartas como uma interrogação
+            botoes[indiceAtual].setIcon(iconeInterrogacao);
+            botoes[indiceErros].setIcon(iconeInterrogacao);
+            temporizador.stop();
+        }
+    }
 
     public ImageIcon getIconeInterrogacao() {
         return iconeInterrogacao;
     }
-
     public void setIconeInterrogacao(ImageIcon lockedCard) {
         this.iconeInterrogacao = lockedCard;
     }
 
+    public int getTotalBotoes() {
+        return totalBotoes;
+    }
     public void setBotoes(JButton[] botoes) {
         this.botoes = botoes;
     }
 
+
     public void setIcones(ImageIcon[] icones) {
         this.icones = icones;
-    }
-
-    public int getTotalBotoes() {
-        return totalBotoes;
     }
 
     public void setTotalBotoes(int totalBotoes) {
@@ -125,15 +135,11 @@ public class Carta extends JPanel {
     public int getNumeroClicks() {
         return this.numeroClicks;
     }
-
     public void setNumeroClicks(int numeroClicks) {
         this.numeroClicks += numeroClicks;
     }
 
-    public int getNumeroAcertos() {
-        return this.numeroAcertos;
-    }
-
+    public int getNumeroAcertos() { return this.numeroAcertos; }
     public void setNumeroAcertos(int numeroAcertos) {
         this.numeroAcertos += numeroAcertos;
     }
@@ -141,14 +147,15 @@ public class Carta extends JPanel {
     public int getNumeroErros() {
         return this.numeroErros;
     }
-
     public void setNumeroErros(int numeroErros) {
         this.numeroErros += numeroErros;
     }
 
     // Altera a dificuldade do jogo
     public void mudarDificuldade() {
-        String input = JOptionPane.showInputDialog("Escolha uma diculdade: \n\nFacil: 0\nMédia: 1\nDifícil: 2\nGod(Tem certeza?): 3\n\n");
+        String input = JOptionPane.showInputDialog("Escolha uma diculdade: \n\nFácil (20 tentativas): 0\nMédia (10 tentativas): 1\nDifícil (5 tentativas): 2\nVidente(1 tentativa): 3\n\n");
+        if(input == null)
+            System.exit(1);
         int escolha = Integer.parseInt(input);
         if (escolha == 0) {
             this.dificuldade = 20;
@@ -199,9 +206,12 @@ public class Carta extends JPanel {
                  */
                 if (icones[indiceAtual] != icones[indiceErros]) {
                     // Mostra as imagens por cerca de 1 seg, antes de esconder novamente
+                    setNumeroErros(1);
                     if ((tentativas + 1) >= dificuldade) {
-                        JOptionPane.showMessageDialog(null, "Fim de jogo", "GAME OVER",
-                                JOptionPane.INFORMATION_MESSAGE);
+                        JOptionPane.showMessageDialog(null, "Fim de jogo\nVocê excedeu todas as suas tentativas.\nAcertos: " +
+                        (getNumeroAcertos() + 1) + "/5" + "\nErros: " + getNumeroErros() +
+                                "\nJogadas: " + getNumeroClicks() / 2, "GAME OVER",
+                                JOptionPane.ERROR_MESSAGE);
                         System.exit(1);
                     } else {
                         tentativas++;
@@ -226,14 +236,5 @@ public class Carta extends JPanel {
         }
     }
 
-    class TimerListener implements ActionListener {
 
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-            // O temporizador depois de ativado, define o icone das cartas como uma interrogação
-            botoes[indiceAtual].setIcon(iconeInterrogacao);
-            botoes[indiceErros].setIcon(iconeInterrogacao);
-            temporizador.stop();
-        }
-    }
 }
