@@ -3,7 +3,6 @@ package br.com.jogodamemoria;
 import javax.swing.*;
 
 public class Main {
-
     // Execução do programa
     public static void main(String[] args) {
         // TODO Auto-generated method stub

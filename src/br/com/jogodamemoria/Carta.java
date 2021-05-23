@@ -1,34 +1,28 @@
 package br.com.jogodamemoria;
 
-
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Objects;
-import javax.swing.Timer;
 import java.util.Random;
 
 public class Carta extends JPanel {
 
     private static Timer temporizador;
-
     private ImageIcon iconeInterrogacao;
     private JButton[] botoes;
     private ImageIcon[] icones;
-
     private int totalBotoes;
     private int numeroClicks;
     private int numeroAcertos;
     private int numeroErros;
-
     private int indiceErros;
     private int indiceAtual;
-
     private int dificuldade;
     private int tentativas;
 
     public Carta() {
-
         //Excessão principal da classe, se não for possivel carregar os arquivos necessario o programa é encerrado.
         try {
             // Excessão que tenta lidar com a entrada invalida do usuario.
@@ -41,7 +35,6 @@ public class Carta extends JPanel {
                         "Erro", JOptionPane.ERROR_MESSAGE);
                 System.exit(1);
             }
-
             // Carrega o icone de interrogação das cartas.
             this.setIconeInterrogacao(new ImageIcon(Objects.requireNonNull(getClass().
                     getResource("res/interrogacao.png"))));
@@ -51,11 +44,9 @@ public class Carta extends JPanel {
                     "res/vidros.png"};
 
             int totalBtns = filenames.length * 2;
-
             this.setTotalBotoes(totalBtns);
             this.setBotoes(new JButton[this.totalBotoes]);
             this.setIcones(new ImageIcon[this.totalBotoes]);
-
             this.setNumeroAcertos(0);
             this.setNumeroErros(0);
             this.setNumeroClicks(0);
@@ -74,7 +65,6 @@ public class Carta extends JPanel {
                 botoes[j].setIcon(this.getIconeInterrogacao());
                 add(botoes[j++]);
             }
-
 
             // Gera posições aleatorias das cartas
             Random gen = new Random();
@@ -98,52 +88,35 @@ public class Carta extends JPanel {
         }
     }
 
-    class TimerListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent actionEvent) {
-            // O temporizador depois de ativado, define o icone das cartas como uma interrogação
-            botoes[indiceAtual].setIcon(iconeInterrogacao);
-            botoes[indiceErros].setIcon(iconeInterrogacao);
-            temporizador.stop();
-        }
-    }
-
+    // Getters e Setters
     public ImageIcon getIconeInterrogacao() {
         return iconeInterrogacao;
     }
     public void setIconeInterrogacao(ImageIcon lockedCard) {
         this.iconeInterrogacao = lockedCard;
     }
-
     public int getTotalBotoes() {
         return totalBotoes;
+    }
+    public void setTotalBotoes(int totalBotoes) {
+        this.totalBotoes = totalBotoes;
     }
     public void setBotoes(JButton[] botoes) {
         this.botoes = botoes;
     }
-
-
     public void setIcones(ImageIcon[] icones) {
         this.icones = icones;
     }
-
-    public void setTotalBotoes(int totalBotoes) {
-        this.totalBotoes = totalBotoes;
-    }
-
     public int getNumeroClicks() {
         return this.numeroClicks;
     }
     public void setNumeroClicks(int numeroClicks) {
         this.numeroClicks += numeroClicks;
     }
-
     public int getNumeroAcertos() { return this.numeroAcertos; }
     public void setNumeroAcertos(int numeroAcertos) {
         this.numeroAcertos += numeroAcertos;
     }
-
     public int getNumeroErros() {
         return this.numeroErros;
     }
@@ -153,8 +126,10 @@ public class Carta extends JPanel {
 
     // Altera a dificuldade do jogo
     public void mudarDificuldade() {
-        String input = JOptionPane.showInputDialog("Escolha uma diculdade: \n\nFácil (20 tentativas): 0\nMédia (10 tentativas): 1\nDifícil (5 tentativas): 2\nVidente(1 tentativa): 3\n\n");
-        if(input == null)
+        String input = JOptionPane.showInputDialog(null,"Escolha uma diculdade: \n\n 0 - Fácil (20 tentativas)\n" +
+                "1 - Média (10 tentativas)\n2 - Difícil (5 tentativas)\n 3 - Vidente(1 tentativa)" +
+                "\n\n\nDigite a opção desejada","SELECIONE A DIFICULDADE",JOptionPane.INFORMATION_MESSAGE);
+        if (input == null)
             System.exit(1);
         int escolha = Integer.parseInt(input);
         if (escolha == 0) {
@@ -166,8 +141,22 @@ public class Carta extends JPanel {
         } else if (escolha == 3) {
             this.dificuldade = 1;
         } else {
-            JOptionPane.showMessageDialog(null, "Escolha inválida, por padrão a dificuldade será configurada como fácil!", "Erro", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(null,
+                    "Escolha inválida, por padrão a dificuldade será configurada como fácil!",
+                    "Erro", JOptionPane.ERROR_MESSAGE);
             this.dificuldade = 20;
+        }
+    }
+
+    // Inner Class que gerencia o temporizador das cartas.
+    class TimerListener implements ActionListener {
+
+        @Override
+        public void actionPerformed(ActionEvent actionEvent) {
+            // O temporizador depois de ativado, define o icone das cartas como uma interrogação
+            botoes[indiceAtual].setIcon(iconeInterrogacao);
+            botoes[indiceErros].setIcon(iconeInterrogacao);
+            temporizador.stop();
         }
     }
 
@@ -195,7 +184,7 @@ public class Carta extends JPanel {
 
             if (getNumeroClicks() % 2 == 0) {
                 if (indiceAtual == indiceErros) {
-                    setNumeroClicks(-1);
+                    numeroClicks--;
                     return;
                 }
 
@@ -206,22 +195,28 @@ public class Carta extends JPanel {
                  */
                 if (icones[indiceAtual] != icones[indiceErros]) {
                     // Mostra as imagens por cerca de 1 seg, antes de esconder novamente
-                    setNumeroErros(1);
+                    numeroErros++;
                     if ((tentativas + 1) >= dificuldade) {
-                        JOptionPane.showMessageDialog(null, "Fim de jogo\nVocê excedeu todas as suas tentativas.\nAcertos: " +
-                        (getNumeroAcertos() + 1) + "/5" + "\nErros: " + getNumeroErros() +
-                                "\nJogadas: " + getNumeroClicks() / 2, "GAME OVER",
+                        JOptionPane.showMessageDialog(null, "Fim de jogo\nVocê excedeu todas as suas tentativas.\n\nRESULTADO: \nAcertos: " +
+                                        getNumeroAcertos() + "/5" + "\nErros: " + getNumeroErros() +
+                                        "\nJogadas: " + getNumeroClicks() / 2, "GAME OVER",
                                 JOptionPane.ERROR_MESSAGE);
                         System.exit(1);
                     } else {
                         tentativas++;
                     }
-                    setNumeroErros(1);
+
                     temporizador.start();
                 } else {
                     if (getNumeroAcertos() == 4) {
-                        JOptionPane.showMessageDialog(null, "\nAcertos: " +
-                                (getNumeroAcertos() + 1) + "/5" + "\nErros: " + getNumeroErros() +
+                        /*
+                         *  Como o contador se de acertos se inicia em 0, se faz necessario incrementar caso todas as
+                         *  cartas sejam encontradas, para então exibir corretamente o numero de acertos na caixa de
+                         *  dialogo.
+                         * */
+                        setNumeroAcertos(1);
+                        JOptionPane.showMessageDialog(null, "Parabéns você conseguiu\n\nRESULTADO: \n\nAcertos: " +
+                                getNumeroAcertos() + "/5" + "\nErros: " + getNumeroErros() +
                                 "\nJogadas: " + getNumeroClicks() / 2, "Resultado", JOptionPane.INFORMATION_MESSAGE);
                         System.exit(0);
                     } else {
@@ -235,6 +230,4 @@ public class Carta extends JPanel {
             }
         }
     }
-
-
 }
