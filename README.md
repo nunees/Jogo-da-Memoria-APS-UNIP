@@ -4,7 +4,7 @@
 ![Windows](https://img.shields.io/badge/Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)
 
 ## Sobre
-___
+
 <p align="justify">A Atividade Prática Supervisionada (APS) do 3º semestre tem como principal 
 objetivo a criação de um jogo utilizando os conceitos de linguagem de programação 
 orientada a objetos aprendidos em sala de aula. Tendo como tema a conscientização 
@@ -24,7 +24,7 @@ das aulas ao longo do semestre, foi possível desenvolver um simples jogo utiliz
 </p>
 
 ## Programa em execução
-___
+
 <br>
 <img src="assets/images/01.png" />
 
