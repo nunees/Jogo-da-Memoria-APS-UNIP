@@ -1,6 +1,5 @@
 .idea
 *.iml
-.git
 bin
 bin/*
 .gitignore
